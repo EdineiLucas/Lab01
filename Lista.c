@@ -19,7 +19,7 @@ void insere_fim(Lista * ap_lista, int valor){
 }
 
 void insere_inicio(Lista * ap_lista, int valor){
-    No *novo_no = (No*)malloc(sizeof(No));
+    Lista novo_no = (No*)malloc(sizeof(No));
     novo_no->valor = valor;
     novo_no->proximo = *ap_lista;
     *ap_lista = novo_no;
@@ -78,23 +78,48 @@ bool remove_i_esimo(Lista * ap_lista, int i){
     return false;
 }
 
-/* Retorna o valor do i-ésimo elemento da lista, caso ele exista. 
-Retorna -1 caso contrário. As posições são contadas a partir de 1, sendo 1 a primeira posição. */
-int recupera_i_esimo(Lista lista, int i);
+int recupera_i_esimo(Lista lista, int i){
+    int count=1;
+    while (lista != NULL)
+    {   
+        if(count == i){
+            return lista->valor;
+        }
+        lista = lista->proximo;
+        count ++;
+    }
+    return -1;
+}
 
-/* Retorna o tamanho da lista. */
-int tamanho(Lista lista);
+int tamanho(Lista lista){
+    int tam = 0;
+    while (lista != NULL)
+    {
+        lista = lista->proximo;
+        tam++;
+    }
+    return tam;
+     
+}
 
 /* Remove todas as ocorrências de valor da lista apontada por ap_lista. 
  * Retorna o numero de ocorrências removidas.
  */
 int remove_ocorrencias(Lista *ap_lista, int valor);
 
-/* Busca elemento valor na lista. 
-   Retorna a posição na lista, começando de 1=primeira posição.
-   Retorna -1 caso não encontrado.
-*/
-int busca(Lista lista, int valor);
+int busca(Lista lista, int valor){
+    int count = 1;
+    while (lista != NULL)
+    {
+        if(lista->valor == valor){
+            return count;
+        }
+        lista = lista->proximo;
+        count++;
+    }
+    return -1;
+    
+}
 
 void imprime(Lista lista){
     if(lista==NULL){
@@ -113,9 +138,18 @@ void imprime(Lista lista){
     printf(")");
 }
 
-/* Desaloca toda a memória alocada da lista.
- */
-void desaloca_lista(Lista *ap_lista);
+void desaloca_lista(Lista *ap_lista){
+    Lista no_atual = *ap_lista;
+    while (no_atual->proximo != NULL)
+    {   
+        Lista no_prox = no_atual->proximo;
+        free (no_atual);
+        no_atual = no_prox;
+    }
+    free(no_atual);
+    *ap_lista = NULL;
+    return;
+}
 
 int main  (){
     Lista L;
@@ -129,8 +163,12 @@ int main  (){
     insere_inicio(&L,1);
     imprime(L);
 
-    remove_i_esimo(&L, 3);
-
+    //remove_i_esimo(&L, 3);
+    
+    /*printf("\nrecupera i_esimo: %d", recupera_i_esimo(L,5));
+    printf("\nBusca:%d", busca(L,5));
+    printf("\nTamanho:%d", tamanho(L));*/
+    desaloca_lista(&L);
     printf("\n");
     imprime(L);
     return 0;
