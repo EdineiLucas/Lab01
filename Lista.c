@@ -1,6 +1,7 @@
 #include "lista.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 void inicializa_lista(Lista * ap_lista){
     *ap_lista = NULL;
@@ -102,10 +103,30 @@ int tamanho(Lista lista){
      
 }
 
-/* Remove todas as ocorrências de valor da lista apontada por ap_lista. 
- * Retorna o numero de ocorrências removidas.
- */
-int remove_ocorrencias(Lista *ap_lista, int valor);
+int remove_ocorrencias(Lista *ap_lista, int valor){
+    if (*ap_lista == NULL){
+        return 0;
+    }
+    Lista *ap_atual = ap_lista, no_rem;
+    int removidos=0;
+    while ((*ap_atual)->proximo != NULL){
+
+        if((*ap_atual)->valor == valor){
+            no_rem = *ap_atual;
+            *ap_atual = (*ap_atual)->proximo;
+            free(no_rem);
+            removidos++;
+        }
+        else{
+            ap_atual = &(*ap_atual)->proximo;
+        }
+    }
+    if((*ap_atual)->valor == valor){
+        remove_fim(ap_lista);
+        removidos++;
+    }
+    return removidos; 
+}
 
 int busca(Lista lista, int valor){
     int count = 1;
@@ -149,27 +170,4 @@ void desaloca_lista(Lista *ap_lista){
     free(no_atual);
     *ap_lista = NULL;
     return;
-}
-
-int main  (){
-    Lista L;
-    inicializa_lista(&L);
-
-    insere_fim(&L,2);
-    insere_fim(&L,3);
-    insere_fim(&L,4);
-    insere_fim(&L,5);
-    insere_fim(&L,6);
-    insere_inicio(&L,1);
-    imprime(L);
-
-    //remove_i_esimo(&L, 3);
-    
-    /*printf("\nrecupera i_esimo: %d", recupera_i_esimo(L,5));
-    printf("\nBusca:%d", busca(L,5));
-    printf("\nTamanho:%d", tamanho(L));*/
-    desaloca_lista(&L);
-    printf("\n");
-    imprime(L);
-    return 0;
 }
